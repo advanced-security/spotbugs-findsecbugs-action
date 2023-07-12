@@ -69,7 +69,7 @@ runs:
         echo "Got spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz"
       shell: bash
     - name: Get FindSecBugs
-      if: inputs.no_cache == 'false' steps.cache-findsecbugs.outputs.cache-hit != 'true'
+      if: inputs.no_cache == 'false' && steps.cache-findsecbugs.outputs.cache-hit != 'true'
       env:
         INPUT_FINDSECBUGS_VERSION: ${{ inputs.findsecbugs_version }}
       run: |
