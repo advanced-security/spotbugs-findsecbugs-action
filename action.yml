@@ -68,7 +68,7 @@ runs:
           spotbugs-"${INPUT_SPOTBUGS_VERSION}"/bin/spotbugs -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList findsecbugs-plugin-"${INPUT_FINDSECBUGS_VERSION}".jar -sarif=spotbugs.sarif "${INPUT_SPOTBUGS_TARGET}"
       shell: bash
     - name: Upload SARIF file
-        if: inputs.upload_sarif == 'true'
-        uses: github/codeql-action/upload-sarif@v2
-        with:
+      if: inputs.upload_sarif == 'true'
+      uses: github/codeql-action/upload-sarif@v2
+      with:
         sarif_file: spotbugs.sarif
