@@ -88,8 +88,6 @@ runs:
         SPOTBUGS_HOME: /home/runner/work/spotbugs+/spotbugs-${{ inputs.spotbugs_version }}
         FINDSECBUGS_HOME: /home/runner/work/findsecbugs+/
       run: |
-        find "${INPUT_SPOTBUGS_TARGET}" -type f -name "*.class"
-        find "${INPUT_SPOTBUGS_TARGET}" -type f -name "*.jar"
         "${SPOTBUGS_HOME}"/bin/spotbugs -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList "${FINDSECBUGS_HOME}"/findsecbugs-plugin-"${INPUT_FINDSECBUGS_VERSION}".jar -sarif=spotbugs.sarif "${INPUT_SPOTBUGS_TARGET}"
       shell: bash
     - name: Upload SARIF file
