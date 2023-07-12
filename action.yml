@@ -53,14 +53,14 @@ runs:
       if: steps.cache-spotbugs.outputs.cache-hit != 'true'
       run: |
           # download SpotBugs
-          curl https://github.com/spotbugs/spotbugs/releases/download/"${INPUT_SPOTBUGS_VERSION}"/spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz -o spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
+          wget -q https://github.com/spotbugs/spotbugs/releases/download/"${INPUT_SPOTBUGS_VERSION}"/spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
           tar -xzf spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
       shell: bash
     - name: Get FindSecBugs
       if: steps.cache-findsecbugs.outputs.cache-hit != 'true'
       run: |
           # download FindSecBugs
-          curl https://search.maven.org/remotecontent?filepath=com/h3xstream/findsecbugs/findsecbugs-plugin/"${INPUT_FINDSECBUGS_VERSION}"/findsecbugs-plugin-"${INPUT_FINDSECBUGS_VERSION}".jar -o findsecbugs-plugin-"${INPUT_FINDSECBUGS_VERSION}".jar
+          wget -q https://search.maven.org/remotecontent?filepath=com/h3xstream/findsecbugs/findsecbugs-plugin/"${INPUT_FINDSECBUGS_VERSION}"/findsecbugs-plugin-"${INPUT_FINDSECBUGS_VERSION}".jar
       shell: bash
     - name: Run SpotBugs
       run: |
