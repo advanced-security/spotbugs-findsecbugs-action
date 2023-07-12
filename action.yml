@@ -72,6 +72,8 @@ runs:
         INPUT_FINDSECBUGS_VERSION: ${{ inputs.findsecbugs_version }}
         INPUT_SPOTBUGS_TARGET: ${{ inputs.spotbugs_target }}
       run: |
+        find . -type f -name "*.class" "${INPUT_SPOTBUGS_TARGET}"
+      find . -type f -name "*.jar" "${INPUT_SPOTBUGS_TARGET}"
         bash spotbugs-"${INPUT_SPOTBUGS_VERSION}"/bin/spotbugs -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList findsecbugs-plugin-"${INPUT_FINDSECBUGS_VERSION}".jar -sarif=spotbugs.sarif "${INPUT_SPOTBUGS_TARGET}"
       shell: bash
     - name: Upload SARIF file
