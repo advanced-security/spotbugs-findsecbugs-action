@@ -1,0 +1,76 @@
+name: SpotBugs with FindSecBugs
+
+author: GitHub Field Security
+description: Run SpotBugs with FindSecBugs, and upload the results to GitHub Code Scanning
+
+inputs:
+  spotbugs_version:
+    description: 'The version of SpotBugs to use'
+    required: false
+    default: '4.7.3'
+  findsecbugs_version:
+    description: 'The version of FindSecBugs to use'
+    required: false
+    default: '1.12.0'
+  spotbugs_target:
+    description: 'The target to run SpotBugs against'
+    required: false
+    default: '*.jar'
+  upload_sarif:
+    description: 'Whether to upload the SARIF file to GitHub Code Scanning'
+    required: false
+    default: 'true'
+  java_distribution:
+    description: 'The Java distribution to use'
+    required: false
+    default: 'microsoft'
+  java_version:
+    description: 'The Java version to use'
+    required: false
+    default: '11'
+
+env:
+    SPOTBUGS_VERSION: ${{ inputs.spotbugs_version }}
+    FINDSECBUGS_VERSION: ${{ inputs.findsecbugs_version }}
+    SPOTBUGS_TARGET: ${{ inputs.spotbugs_target }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: ${{ inputs.java_distribution }}
+        java-version: ${{ inputs.java_version }}
+    - name: Cache SpotBugs
+      id: cache-spotbugs
+      uses: actions/cache@v3
+      with:
+        path: spotbugs-${{ inputs.spotbugs_version }}
+        key: ${{ runner.os }}-spotbugs-${{ inputs.spotbugs_version }}
+    - name: Cache FindSecBugs
+      id: cache-findsecbugs
+      uses: actions/cache@v3
+      with:
+        path: findsecbugs-plugin-${{ inputs.findsecbugs_version }}.jar
+        key: ${{ runner.os }}-findsecbugs-${{ inputs.findsecbugs_version }}
+    - name: Get SpotBugs
+      if: steps.cache-spotbugs.outputs.cache-hit != 'true'
+      run: |
+          # download SpotBugs
+          curl https://github.com/spotbugs/spotbugs/releases/download/"${SPOTBUGS_VERSION}"/spotbugs-"${SPOTBUGS_VERSION}".tgz -o spotbugs-"${SPOTBUGS_VERSION}".tgz
+          tar -xzf spotbugs-"${SPOTBUGS_VERSION}".tgz
+    - name: Get FindSecBugs
+      if: steps.cache-findsecbugs.outputs.cache-hit != 'true'
+      run: |
+          # download FindSecBugs
+          curl https://search.maven.org/remotecontent?filepath=com/h3xstream/findsecbugs/findsecbugs-plugin/"${FINDSECBUGS_VERSION}"/findsecbugs-plugin-"${FINDSECBUGS_VERSION}".jar -o findsecbugs-plugin-"${FINDSECBUGS_VERSION}".jar
+    - name: Run SpotBugs
+      run: |
+          # run SpotBugs
+          spotbugs-"${SPOTBUGS_VERSION}"/bin/spotbugs -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList findsecbugs-plugin-"${FINDSECBUGS_VERSION}".jar -sarif=spotbugs.sarif "${SPOTBUGS_TARGET}"
+    - name: Upload SARIF file
+        if: inputs.upload-sarif == 'true'
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+        sarif_file: spotbugs.sarif
