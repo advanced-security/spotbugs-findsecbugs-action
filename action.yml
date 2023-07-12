@@ -52,7 +52,13 @@ runs:
     - name: Get SpotBugs
       if: steps.cache-spotbugs.outputs.cache-hit != 'true'
       run: |
-        wget -q https://github.com/spotbugs/spotbugs/releases/download/"${INPUT_SPOTBUGS_VERSION}"/spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz && tar -xzf spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
+        echo "Getting spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz"
+        wget -q https://github.com/spotbugs/spotbugs/releases/download/"${INPUT_SPOTBUGS_VERSION}"/spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
+        echo "Got tgz"
+        ls *.tgz
+        echo "Untarring"
+        tar -xzf spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
+        echo "Done"
       shell: bash
     - name: Get FindSecBugs
       if: steps.cache-findsecbugs.outputs.cache-hit != 'true'
