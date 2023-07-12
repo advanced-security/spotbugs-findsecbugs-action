@@ -44,16 +44,18 @@ runs:
         distribution: ${{ inputs.java_distribution }}
         java-version: ${{ inputs.java_version }}
     - name: Cache SpotBugs
+      if: inputs.no_cache == 'false'
       id: cache-spotbugs
       uses: actions/cache@v3
       with:
-        path: spotbugs-${{ inputs.spotbugs_version }}
+        path: /home/runner/work/spotbugs+/spotbugs-${{ inputs.spotbugs_version }}
         key: ${{ runner.os }}-spotbugs-${{ inputs.spotbugs_version }}
     - name: Cache FindSecBugs
+      if: inputs.no_cache == 'false'
       id: cache-findsecbugs
       uses: actions/cache@v3
       with:
-        path: findsecbugs-plugin-${{ inputs.findsecbugs_version }}.jar
+        path: /home/runner/work/findsecbugs+/findsecbugs-plugin-${{ inputs.findsecbugs_version }}.jar
         key: ${{ runner.os }}-findsecbugs-${{ inputs.findsecbugs_version }}
     - name: Get SpotBugs
       if: inputs.no_cache == 'true' || steps.cache-spotbugs.outputs.cache-hit != 'true'
