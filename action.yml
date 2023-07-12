@@ -51,6 +51,8 @@ runs:
         key: ${{ runner.os }}-findsecbugs-${{ inputs.findsecbugs_version }}
     - name: Get SpotBugs
       if: steps.cache-spotbugs.outputs.cache-hit != 'true'
+      env:
+        INPUT_SPOTBUGS_VERSION: ${{ inputs.spotbugs_version }}
       run: |
         echo "Getting spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz"
         wget -q https://github.com/spotbugs/spotbugs/releases/download/"${INPUT_SPOTBUGS_VERSION}"/spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
@@ -62,10 +64,16 @@ runs:
       shell: bash
     - name: Get FindSecBugs
       if: steps.cache-findsecbugs.outputs.cache-hit != 'true'
+      env:
+        INPUT_FINDSECBUGS_VERSION: ${{ inputs.findsecbugs_version }}
       run: |
         wget -q https://search.maven.org/remotecontent?filepath=com/h3xstream/findsecbugs/findsecbugs-plugin/"${INPUT_FINDSECBUGS_VERSION}"/findsecbugs-plugin-"${INPUT_FINDSECBUGS_VERSION}".jar
       shell: bash
     - name: Run SpotBugs
+      env:
+        INPUT_SPOTBUGS_VERSION: ${{ inputs.spotbugs_version }}
+        INPUT_FINDSECBUGS_VERSION: ${{ inputs.findsecbugs_version }}
+        INPUT_SPOTBUGS_TARGET: ${{ inputs.spotbugs_target }}
       run: |
         spotbugs-"${INPUT_SPOTBUGS_VERSION}"/bin/spotbugs -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList findsecbugs-plugin-"${INPUT_FINDSECBUGS_VERSION}".jar -sarif=spotbugs.sarif "${INPUT_SPOTBUGS_TARGET}"
       shell: bash
