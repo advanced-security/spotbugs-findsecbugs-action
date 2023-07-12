@@ -52,20 +52,16 @@ runs:
     - name: Get SpotBugs
       if: steps.cache-spotbugs.outputs.cache-hit != 'true'
       run: |
-          # download SpotBugs
-          wget -q https://github.com/spotbugs/spotbugs/releases/download/"${INPUT_SPOTBUGS_VERSION}"/spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
-          tar -xzf spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
+        wget -q https://github.com/spotbugs/spotbugs/releases/download/"${INPUT_SPOTBUGS_VERSION}"/spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz && tar -xzf spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
       shell: bash
     - name: Get FindSecBugs
       if: steps.cache-findsecbugs.outputs.cache-hit != 'true'
       run: |
-          # download FindSecBugs
-          wget -q https://search.maven.org/remotecontent?filepath=com/h3xstream/findsecbugs/findsecbugs-plugin/"${INPUT_FINDSECBUGS_VERSION}"/findsecbugs-plugin-"${INPUT_FINDSECBUGS_VERSION}".jar
+        wget -q https://search.maven.org/remotecontent?filepath=com/h3xstream/findsecbugs/findsecbugs-plugin/"${INPUT_FINDSECBUGS_VERSION}"/findsecbugs-plugin-"${INPUT_FINDSECBUGS_VERSION}".jar
       shell: bash
     - name: Run SpotBugs
       run: |
-          # run SpotBugs
-          spotbugs-"${INPUT_SPOTBUGS_VERSION}"/bin/spotbugs -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList findsecbugs-plugin-"${INPUT_FINDSECBUGS_VERSION}".jar -sarif=spotbugs.sarif "${INPUT_SPOTBUGS_TARGET}"
+        spotbugs-"${INPUT_SPOTBUGS_VERSION}"/bin/spotbugs -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList findsecbugs-plugin-"${INPUT_FINDSECBUGS_VERSION}".jar -sarif=spotbugs.sarif "${INPUT_SPOTBUGS_TARGET}"
       shell: bash
     - name: Upload SARIF file
       if: inputs.upload_sarif == 'true'
