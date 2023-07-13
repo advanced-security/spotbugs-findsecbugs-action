@@ -1,7 +1,10 @@
 name: SpotBugs with FindSecBugs
 
 author: GitHub Field Security
-description: Run SpotBugs with FindSecBugs, and upload the results to GitHub Code Scanning
+description: Run SpotBugs with FindSecBugs on your build results, and upload the results to GitHub Code Scanning
+branding:
+  icon: 'shield'
+  color: 'blue'
 
 inputs:
   spotbugs_version:
