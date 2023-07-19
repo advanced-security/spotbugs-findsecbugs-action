@@ -20,7 +20,7 @@ jobs:
         - name: Setup Java
           uses: actions/setup-java@v3
           with:
-            distribution: 'temurin'
+            distribution: 'microsoft'
             java-version: 11
         # do your build steps. This example uses sbt
         - name: Compile with sbt
@@ -30,7 +30,7 @@ jobs:
           uses: advanced-security/spotbugs-findsecbugs-action@v1
           with:
             # set these appropriately for your project
-            spotbugs_target: 'target/scala-*/classes'
+            spotbugs_target: 'target/scala-2.13/classes' # cannot have globs
             # upload_sarif: 'true'
             # no_cache: 'false'
             # spotbugs_version: '4.7.3'
