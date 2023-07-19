@@ -19,6 +19,9 @@ jobs:
         # this needs to be appropriately configured for your project
         - name: Setup Java
           uses: actions/setup-java@v3
+          with:
+            distribution: 'temurin'
+            java-version: 11
         # do your build steps. This example uses sbt
         - name: Compile with sbt
           run: sbt compile
