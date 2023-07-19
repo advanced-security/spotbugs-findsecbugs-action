@@ -16,14 +16,14 @@ Then, set up this Action as a step in your Actions workflow, e.g. for a typical 
     - name: Run SpotBugs with FindSecBugs
       uses: advanced-security/spotbugs-findsecbugs-action@v1
       with:
-        spotbugs_target: 'target/scala-*/classes'
+        spotbugs_target: 'target/scala-2.13/classes'
 ```
 
 ## Inputs
 
 * `spotbugs_version`: The version of SpotBugs to use. Default: `4.7.3`
 * `findsecbugs_version`: The version of FindSecBugs to use. Default: `1.12.0`
-* `spotbugs_target`: The target to run SpotBugs against. Default: `*.jar`
+* `spotbugs_target`: The target directory to run SpotBugs against. Default: `target/`
 * `upload_sarif`: Whether to upload the SARIF file to GitHub Code Scanning. Default: `true`
 * `java_distribution`: The Java distribution to use. Default: `microsoft`
 * `java_version`: The Java version to use. Default: `11`
