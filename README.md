@@ -27,6 +27,7 @@ Then, set up this Action as a step in your Actions workflow, e.g. for a typical 
 * `java_distribution`: The Java distribution to use. Default: `microsoft`
 * `java_version`: The Java version to use. Default: `11`
 * `no_cache`: Do not use cached versions of the Spotbugs and FindSecBugs tools. Default: `false`
+* `path_prefix`: Add this path prefix to the start of file locations. Required: `false`
 
 ## Full sample workflow
 
@@ -39,6 +40,9 @@ A: Several SpotBugs plugins are usable in CI/CD and Actions, but don't output SA
 
 Q: Why doesn't the Action support setting argument X of SpotBugs?
 A: It's a work-in-progress. Please raise an issue or a PR if you need a feature.
+
+Q: Why do the files not resolve in the Code Scanning results?
+A: The paths in the Jar or Class file metadata might not match up with the root of the repository. Try using the input `path_prefix`. If two build targets don't share the same prefix, then try running this Action twice, once per target with a different prefix for each.
 
 ## Requirements
 

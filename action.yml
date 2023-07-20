@@ -40,6 +40,9 @@ inputs:
     required: false
     type: boolean
     default: 'false'
+  path_prefix:
+    description: 'Add this path prefix to the start of file locations'
+    required: false
 
 runs:
   using: "composite"
@@ -67,10 +70,10 @@ runs:
       if: inputs.no_cache == 'true' || steps.cache-spotbugs.outputs.cache-hit != 'true'
       env:
         INPUT_SPOTBUGS_VERSION: ${{ inputs.spotbugs_version }}
+        SPOTBUGS_HOME: /home/runner/work/spotbugs+/
       run: |
-        cd /home/runner/work/
-        mkdir -p 'spotbugs+'
-        cd 'spotbugs+'
+        mkdir -p "${SPOTBUGS_HOME}"
+        cd "${SPOTBUGS_HOME}"
         wget -q -O spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz "https://github.com/spotbugs/spotbugs/releases/download/${INPUT_SPOTBUGS_VERSION}/spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz"
         tar -xzf spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
         chmod +x spotbugs-"${INPUT_SPOTBUGS_VERSION}"/bin/spotbugs
@@ -81,10 +84,10 @@ runs:
       if: inputs.no_cache == 'true' || steps.cache-findsecbugs.outputs.cache-hit != 'true'
       env:
         INPUT_FINDSECBUGS_VERSION: ${{ inputs.findsecbugs_version }}
+        FINDSECBUGS_HOME: /home/runner/work/findsecbugs+/
       run: |
-        cd /home/runner/work/
-        mkdir -p 'findsecbugs+'
-        cd 'findsecbugs+'
+        mkdir -p "${FINDSECBUGS_HOME}"
+        cd "${FINDSECBUGS_HOME}"
         wget -q -O "findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" "https://search.maven.org/remotecontent?filepath=com/h3xstream/findsecbugs/findsecbugs-plugin/${INPUT_FINDSECBUGS_VERSION}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
         ls "findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
         echo "Got findsecbugs"
@@ -96,12 +99,26 @@ runs:
         INPUT_SPOTBUGS_GLOB: ${{ inputs.spotbugs_filename_glob }}
         SPOTBUGS_HOME: /home/runner/work/spotbugs+/spotbugs-${{ inputs.spotbugs_version }}
         FINDSECBUGS_HOME: /home/runner/work/findsecbugs+/
+        SPOTBUGS_WORKING: /home/runner/work/spotbugs_working+/
       run: |
-        SPOTBUGS_FILES=$(find "${INPUT_SPOTBUGS_TARGET}" -type f -name "${INPUT_SPOTBUGS_GLOB}" -exec echo -n {} \+)
+        mkdir -p "${SPOTBUGS_WORKING}"
+        cd "${SPOTBUGS_WORKING}"
+        SPOTBUGS_FILES=$(find "${GITHUB_WORKSPACE}/${INPUT_SPOTBUGS_TARGET}" -type f -name "${INPUT_SPOTBUGS_GLOB}" -exec echo -n {} \+)
         "${SPOTBUGS_HOME}/bin/spotbugs" -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList "${FINDSECBUGS_HOME}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" -sarif=spotbugs.sarif ${SPOTBUGS_FILES}
+      shell: bash
+    - name: Adjust file paths
+      if: inputs.path_prefix != null
+      env:
+        INPUT_PATH_PREFIX: ${{ inputs.path_prefix }}
+        SPOTBUGS_WORKING: /home/runner/work/spotbugs_working+/
+      run: |
+        cd "${SPOTBUGS_WORKING}"
+        jq --arg prefix "${INPUT_PATH_PREFIX}" '.runs[].results[].locations[].physicalLocation.artifactLocation.uri |= $prefix + .' < spotbugs.sarif > spotbugs_edited.sarif
+        mv spotbugs.sarif spotbugs_orig.sarif
+        mv spotbugs_edited.sarif spotbugs.sarif
       shell: bash
     - name: Upload SARIF file
       if: inputs.upload_sarif == 'true'
       uses: github/codeql-action/upload-sarif@v2
       with:
-        sarif_file: spotbugs.sarif
+        sarif_file: /home/runner/work/spotbugs_working+/spotbugs.sarif
