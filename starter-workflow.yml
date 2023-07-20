@@ -29,8 +29,9 @@ jobs:
         - name: Run SpotBugs with FindSecBugs
           uses: advanced-security/spotbugs-findsecbugs-action@v1
           with:
-            # set these appropriately for your project
-            spotbugs_target: 'target/scala-2.13/classes' # cannot have globs
+            # set these appropriately for your project - the defaults are shown here for context
+            # spotbugs_target: 'target/' # cannot have globs
+            # spotbugs_filename_glob: '*.jar'
             # upload_sarif: 'true'
             # no_cache: 'false'
             # spotbugs_version: '4.7.3'
