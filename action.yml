@@ -68,7 +68,7 @@ runs:
         cd /home/runner/work/
         mkdir -p 'spotbugs+'
         cd 'spotbugs+'
-        wget -q https://github.com/spotbugs/spotbugs/releases/download/"${INPUT_SPOTBUGS_VERSION}"/spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
+        wget -q "https://github.com/spotbugs/spotbugs/releases/download/${INPUT_SPOTBUGS_VERSION}/spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz"
         tar -xzf spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
         chmod +x spotbugs-"${INPUT_SPOTBUGS_VERSION}"/bin/spotbugs
         echo "Got spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz"
@@ -81,7 +81,7 @@ runs:
         cd /home/runner/work/
         mkdir -p 'findsecbugs+'
         cd 'findsecbugs+'
-        wget -q https://search.maven.org/remotecontent?filepath=com/h3xstream/findsecbugs/findsecbugs-plugin/"${INPUT_FINDSECBUGS_VERSION}"/findsecbugs-plugin-"${INPUT_FINDSECBUGS_VERSION}".jar
+        wget -q "https://search.maven.org/remotecontent?filepath=com/h3xstream/findsecbugs/findsecbugs-plugin/${INPUT_FINDSECBUGS_VERSION}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
         echo "Got findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
       shell: bash
     - name: Run SpotBugs
@@ -92,7 +92,7 @@ runs:
         FINDSECBUGS_HOME: /home/runner/work/findsecbugs+/
       run: |
         SPOTBUGS_FILES=$(find "${INPUT_SPOTBUGS_TARGET}" -type f -exec echo -n {} \+)
-        "${SPOTBUGS_HOME}"/bin/spotbugs -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList "${FINDSECBUGS_HOME}"/findsecbugs-plugin-"${INPUT_FINDSECBUGS_VERSION}".jar -sarif=spotbugs.sarif ${SPOTBUGS_FILES}
+        "${SPOTBUGS_HOME}/bin/spotbugs" -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList "${FINDSECBUGS_HOME}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" -sarif=spotbugs.sarif ${SPOTBUGS_FILES}
       shell: bash
     - name: Upload SARIF file
       if: inputs.upload_sarif == 'true'
