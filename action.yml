@@ -84,10 +84,10 @@ runs:
       if: inputs.no_cache == 'true' || steps.cache-findsecbugs.outputs.cache-hit != 'true'
       env:
         INPUT_FINDSECBUGS_VERSION: ${{ inputs.findsecbugs_version }}
+        FINDSECBUGS_HOME: /home/runner/work/findsecbugs+/
       run: |
-        cd /home/runner/work/
-        mkdir -p 'findsecbugs+'
-        cd 'findsecbugs+'
+        mkdir -p "${FINDSECBUGS_HOME}"
+        cd "${FINDSECBUGS_HOME}"
         wget -q -O "findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" "https://search.maven.org/remotecontent?filepath=com/h3xstream/findsecbugs/findsecbugs-plugin/${INPUT_FINDSECBUGS_VERSION}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
         ls "findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
         echo "Got findsecbugs"
@@ -101,6 +101,7 @@ runs:
         FINDSECBUGS_HOME: /home/runner/work/findsecbugs+/
         SPOTBUGS_WORKING: /home/runner/work/spotbugs_working+/
       run: |
+        mkdir -p "${SPOTBUGS_WORKING}"
         cd "${SPOTBUGS_WORKING}"
         SPOTBUGS_FILES=$(find "${INPUT_SPOTBUGS_TARGET}" -type f -name "${INPUT_SPOTBUGS_GLOB}" -exec echo -n {} \+)
         "${SPOTBUGS_HOME}/bin/spotbugs" -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList "${FINDSECBUGS_HOME}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" -sarif=spotbugs.sarif ${SPOTBUGS_FILES}
@@ -111,6 +112,7 @@ runs:
         INPUT_PATH_PREFIX: ${{ inputs.path_prefix }}
         SPOTBUGS_WORKING: /home/runner/work/spotbugs_working+/
       run: |
+        mkdir -p "${SPOTBUGS_WORKING}"
         cd "${SPOTBUGS_WORKING}"
         jq --arg prefix "${INPUT_PATH_PREFIX}" '.runs[].results[].locations[].physicalLocation.artifactLocation | $prefix + .uri' < spotbugs.sarif > spotbugs_edited.sarif
         mv spotbugs.sarif spotbugs_orig.sarif
