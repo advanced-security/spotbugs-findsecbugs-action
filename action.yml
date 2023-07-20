@@ -40,6 +40,9 @@ inputs:
     required: false
     type: boolean
     default: 'false'
+  path_prefix:
+    description: 'Add this path prefix to the start of file locations'
+    required: false
 
 runs:
   using: "composite"
@@ -99,6 +102,15 @@ runs:
       run: |
         SPOTBUGS_FILES=$(find "${INPUT_SPOTBUGS_TARGET}" -type f -name "${INPUT_SPOTBUGS_GLOB}" -exec echo -n {} \+)
         "${SPOTBUGS_HOME}/bin/spotbugs" -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList "${FINDSECBUGS_HOME}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" -sarif=spotbugs.sarif ${SPOTBUGS_FILES}
+      shell: bash
+    - name: Adjust file paths
+      if: inputs.path_prefix != null
+      env:
+        INPUT_PATH_PREFIX: ${{ inputs.path_prefix }}
+      run: |
+        jq --arg prefix "${INPUT_PATH_PREFIX}" '.runs[].results[].locations[].physicalLocation.artifactLocation | $prefix + .uri' < spotbugs.sarif > spotbugs_edited.sarif
+        mv spotbugs.sarf spotbugs_orig.sarif
+        mv spotbugs_edited.sarif spotbugs.sarif
       shell: bash
     - name: Upload SARIF file
       if: inputs.upload_sarif == 'true'
