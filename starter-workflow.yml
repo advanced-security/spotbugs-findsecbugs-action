@@ -22,15 +22,16 @@ jobs:
           with:
             distribution: 'microsoft'
             java-version: 11
-        # do your build steps. This example uses sbt
-        - name: Compile with sbt
-          run: sbt compile
+        # do your build steps. This example uses sbt to create a .jar file, which will go into the target/scala-2.13 folder
+        - name: Publish locally with sbt
+          run: sbt publishLocal
         # now run SpotBugs and upload the results to Code Scanning
         - name: Run SpotBugs with FindSecBugs
           uses: advanced-security/spotbugs-findsecbugs-action@v1
           with:
-            # set these appropriately for your project
-            spotbugs_target: 'target/scala-2.13/classes' # cannot have globs
+            # set these appropriately for your project - the defaults are shown here for context
+            spotbugs_target: 'target/scala-2.13' # cannot have globs
+            # spotbugs_filename_glob: '*.jar'
             # upload_sarif: 'true'
             # no_cache: 'false'
             # spotbugs_version: '4.7.3'
