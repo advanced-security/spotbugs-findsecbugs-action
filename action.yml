@@ -113,7 +113,7 @@ runs:
         SPOTBUGS_WORKING: /home/runner/work/spotbugs_working+/
       run: |
         cd "${SPOTBUGS_WORKING}"
-        jq --arg prefix "${INPUT_PATH_PREFIX}" '.runs[].results[].locations[].physicalLocation.artifactLocation | $prefix + .uri' < spotbugs.sarif > spotbugs_edited.sarif
+        jq --arg prefix "${INPUT_PATH_PREFIX}" '.runs[].results[].locations[].physicalLocation.artifactLocation |= $prefix + .uri' < spotbugs.sarif > spotbugs_edited.sarif
         mv spotbugs.sarif spotbugs_orig.sarif
         mv spotbugs_edited.sarif spotbugs.sarif
       shell: bash
