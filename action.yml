@@ -70,10 +70,10 @@ runs:
       if: inputs.no_cache == 'true' || steps.cache-spotbugs.outputs.cache-hit != 'true'
       env:
         INPUT_SPOTBUGS_VERSION: ${{ inputs.spotbugs_version }}
+        SPOTBUGS_HOME: /home/runner/work/spotbugs+/
       run: |
-        cd /home/runner/work/
-        mkdir -p 'spotbugs+'
-        cd 'spotbugs+'
+        mkdir -p "${SPOTBUGS_HOME}"
+        cd "${SPOTBUGS_HOME}"
         wget -q -O spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz "https://github.com/spotbugs/spotbugs/releases/download/${INPUT_SPOTBUGS_VERSION}/spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz"
         tar -xzf spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
         chmod +x spotbugs-"${INPUT_SPOTBUGS_VERSION}"/bin/spotbugs
@@ -103,7 +103,7 @@ runs:
       run: |
         mkdir -p "${SPOTBUGS_WORKING}"
         cd "${SPOTBUGS_WORKING}"
-        SPOTBUGS_FILES=$(find "${INPUT_SPOTBUGS_TARGET}" -type f -name "${INPUT_SPOTBUGS_GLOB}" -exec echo -n {} \+)
+        SPOTBUGS_FILES=$(find "${GITHUB_WORKSPACE}/${INPUT_SPOTBUGS_TARGET}" -type f -name "${INPUT_SPOTBUGS_GLOB}" -exec echo -n {} \+)
         "${SPOTBUGS_HOME}/bin/spotbugs" -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList "${FINDSECBUGS_HOME}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" -sarif=spotbugs.sarif ${SPOTBUGS_FILES}
       shell: bash
     - name: Adjust file paths
@@ -112,7 +112,6 @@ runs:
         INPUT_PATH_PREFIX: ${{ inputs.path_prefix }}
         SPOTBUGS_WORKING: /home/runner/work/spotbugs_working+/
       run: |
-        mkdir -p "${SPOTBUGS_WORKING}"
         cd "${SPOTBUGS_WORKING}"
         jq --arg prefix "${INPUT_PATH_PREFIX}" '.runs[].results[].locations[].physicalLocation.artifactLocation | $prefix + .uri' < spotbugs.sarif > spotbugs_edited.sarif
         mv spotbugs.sarif spotbugs_orig.sarif
