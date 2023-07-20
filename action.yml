@@ -99,7 +99,9 @@ runs:
         INPUT_SPOTBUGS_GLOB: ${{ inputs.spotbugs_filename_glob }}
         SPOTBUGS_HOME: /home/runner/work/spotbugs+/spotbugs-${{ inputs.spotbugs_version }}
         FINDSECBUGS_HOME: /home/runner/work/findsecbugs+/
+        SPOTBUGS_WORKING: /home/runner/work/spotbugs_working+/
       run: |
+        cd "${SPOTBUGS_WORKING}"
         SPOTBUGS_FILES=$(find "${INPUT_SPOTBUGS_TARGET}" -type f -name "${INPUT_SPOTBUGS_GLOB}" -exec echo -n {} \+)
         "${SPOTBUGS_HOME}/bin/spotbugs" -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList "${FINDSECBUGS_HOME}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" -sarif=spotbugs.sarif ${SPOTBUGS_FILES}
       shell: bash
@@ -107,13 +109,17 @@ runs:
       if: inputs.path_prefix != null
       env:
         INPUT_PATH_PREFIX: ${{ inputs.path_prefix }}
+        SPOTBUGS_WORKING: /home/runner/work/spotbugs_working+/
       run: |
+        cd "${SPOTBUGS_WORKING}"
         jq --arg prefix "${INPUT_PATH_PREFIX}" '.runs[].results[].locations[].physicalLocation.artifactLocation | $prefix + .uri' < spotbugs.sarif > spotbugs_edited.sarif
-        mv spotbugs.sarf spotbugs_orig.sarif
+        mv spotbugs.sarif spotbugs_orig.sarif
         mv spotbugs_edited.sarif spotbugs.sarif
       shell: bash
     - name: Upload SARIF file
       if: inputs.upload_sarif == 'true'
+      env:
+        SPOTBUGS_WORKING: /home/runner/work/spotbugs_working+/
       uses: github/codeql-action/upload-sarif@v2
       with:
-        sarif_file: spotbugs.sarif
+        sarif_file: "${SPOTBUGS_WORKING}"/spotbugs.sarif
