@@ -71,7 +71,7 @@ runs:
         cd /home/runner/work/
         mkdir -p 'spotbugs+'
         cd 'spotbugs+'
-        wget -q "https://github.com/spotbugs/spotbugs/releases/download/${INPUT_SPOTBUGS_VERSION}/spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz"
+        wget -q -O spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz "https://github.com/spotbugs/spotbugs/releases/download/${INPUT_SPOTBUGS_VERSION}/spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz"
         tar -xzf spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
         chmod +x spotbugs-"${INPUT_SPOTBUGS_VERSION}"/bin/spotbugs
         ls "spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz"
@@ -85,7 +85,7 @@ runs:
         cd /home/runner/work/
         mkdir -p 'findsecbugs+'
         cd 'findsecbugs+'
-        wget -q "https://search.maven.org/remotecontent?filepath=com/h3xstream/findsecbugs/findsecbugs-plugin/${INPUT_FINDSECBUGS_VERSION}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
+        wget -q -O "findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" "https://search.maven.org/remotecontent?filepath=com/h3xstream/findsecbugs/findsecbugs-plugin/${INPUT_FINDSECBUGS_VERSION}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
         ls "findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
         echo "Got findsecbugs"
       shell: bash
