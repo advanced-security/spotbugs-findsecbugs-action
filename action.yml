@@ -118,8 +118,6 @@ runs:
       shell: bash
     - name: Upload SARIF file
       if: inputs.upload_sarif == 'true'
-      env:
-        SPOTBUGS_WORKING: /home/runner/work/spotbugs_working+/
       uses: github/codeql-action/upload-sarif@v2
       with:
-        sarif_file: "${SPOTBUGS_WORKING}"/spotbugs.sarif
+        sarif_file: /home/runner/work/spotbugs_working+/spotbugs.sarif
