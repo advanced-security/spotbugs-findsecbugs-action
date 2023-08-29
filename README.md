@@ -44,6 +44,9 @@ A: It's a work-in-progress. Please raise an issue or a PR if you need a feature.
 Q: Why do the files not resolve in the Code Scanning results?
 A: The paths in the Jar or Class file metadata might not match up with the root of the repository. Try using the input `path_prefix`. If two build targets don't share the same prefix, then try running this Action twice, once per target with a different prefix for each.
 
+Q: Why doesn't FindSecBugs find vulnerability X?
+A: This Action just wraps those tools. Raise an issue on the [FindSecBugs repo](https://github.com/find-sec-bugs/find-sec-bugs/).
+
 ## Requirements
 
 * GitHub Actions runner
