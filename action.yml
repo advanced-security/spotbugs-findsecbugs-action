@@ -48,7 +48,7 @@ inputs:
   base_path:
     description: 'The home directory of the runner'
     required: false
-    default: '/home/runner/work/'
+    default: '/home/runner/work'
 
 
 runs:
@@ -64,20 +64,20 @@ runs:
       id: cache-spotbugs
       uses: actions/cache@v3
       with:
-        path: ${{ inputs.base_path }}spotbugs+/spotbugs-${{ inputs.spotbugs_version }}
+        path: ${{ inputs.base_path }}/spotbugs+/spotbugs-${{ inputs.spotbugs_version }}
         key: ${{ runner.os }}-spotbugs-${{ inputs.spotbugs_version }}
     - name: Cache FindSecBugs
       if: inputs.no_cache == 'false'
       id: cache-findsecbugs
       uses: actions/cache@v3
       with:
-        path: ${{ inputs.base_path }}findsecbugs+/findsecbugs-plugin-${{ inputs.findsecbugs_version }}.jar
+        path: ${{ inputs.base_path }}/findsecbugs+/findsecbugs-plugin-${{ inputs.findsecbugs_version }}.jar
         key: ${{ runner.os }}-findsecbugs-${{ inputs.findsecbugs_version }}
     - name: Get SpotBugs
       if: inputs.no_cache == 'true' || steps.cache-spotbugs.outputs.cache-hit != 'true'
       env:
         INPUT_SPOTBUGS_VERSION: ${{ inputs.spotbugs_version }}
-        SPOTBUGS_HOME: ${{ inputs.base_path }}spotbugs+/
+        SPOTBUGS_HOME: ${{ inputs.base_path }}/spotbugs+/
       run: |
         mkdir -p "${SPOTBUGS_HOME}"
         cd "${SPOTBUGS_HOME}"
@@ -91,7 +91,7 @@ runs:
       if: inputs.no_cache == 'true' || steps.cache-findsecbugs.outputs.cache-hit != 'true'
       env:
         INPUT_FINDSECBUGS_VERSION: ${{ inputs.findsecbugs_version }}
-        FINDSECBUGS_HOME: ${{ inputs.base_path }}findsecbugs+/
+        FINDSECBUGS_HOME: ${{ inputs.base_path }}/findsecbugs+/
       run: |
         mkdir -p "${FINDSECBUGS_HOME}"
         cd "${FINDSECBUGS_HOME}"
@@ -104,9 +104,9 @@ runs:
         INPUT_FINDSECBUGS_VERSION: ${{ inputs.findsecbugs_version }}
         INPUT_SPOTBUGS_TARGET: ${{ inputs.spotbugs_target }}
         INPUT_SPOTBUGS_GLOB: ${{ inputs.spotbugs_filename_glob }}
-        SPOTBUGS_HOME: ${{ inputs.base_path }}spotbugs+/spotbugs-${{ inputs.spotbugs_version }}
-        FINDSECBUGS_HOME: ${{ inputs.base_path }}findsecbugs+/
-        SPOTBUGS_WORKING: ${{ inputs.base_path }}spotbugs_working+/
+        SPOTBUGS_HOME: ${{ inputs.base_path }}/spotbugs+/spotbugs-${{ inputs.spotbugs_version }}
+        FINDSECBUGS_HOME: ${{ inputs.base_path }}/findsecbugs+/
+        SPOTBUGS_WORKING: ${{ inputs.base_path }}/spotbugs_working+/
       run: |
         mkdir -p "${SPOTBUGS_WORKING}"
         cd "${SPOTBUGS_WORKING}"
@@ -117,7 +117,7 @@ runs:
       if: inputs.path_prefix != null
       env:
         INPUT_PATH_PREFIX: ${{ inputs.path_prefix }}
-        SPOTBUGS_WORKING: ${{ inputs.base_path }}spotbugs_working+/
+        SPOTBUGS_WORKING: ${{ inputs.base_path }}/spotbugs_working+/
       run: |
         cd "${SPOTBUGS_WORKING}"
         jq --arg prefix "${INPUT_PATH_PREFIX}" '.runs[].results[].locations[].physicalLocation.artifactLocation.uri |= $prefix + .' < spotbugs.sarif > spotbugs_edited.sarif
@@ -128,4 +128,4 @@ runs:
       if: inputs.upload_sarif == 'true'
       uses: github/codeql-action/upload-sarif@v2
       with:
-        sarif_file: ${{ inputs.base_path }}spotbugs_working+/spotbugs.sarif
+        sarif_file: ${{ inputs.base_path }}/spotbugs_working+/spotbugs.sarif
