@@ -43,6 +43,10 @@ inputs:
   path_prefix:
     description: 'Add this path prefix to the start of file locations'
     required: false
+  maxHeap:
+    description: 'By default, SpotBugs allocates 768M of heap space. You can increase this using this parameter'
+    required: false
+    default: 768M
 
 runs:
   using: "composite"
@@ -104,7 +108,7 @@ runs:
         mkdir -p "${SPOTBUGS_WORKING}"
         cd "${SPOTBUGS_WORKING}"
         SPOTBUGS_FILES=$(find "${GITHUB_WORKSPACE}/${INPUT_SPOTBUGS_TARGET}" -type f -name "${INPUT_SPOTBUGS_GLOB}" -exec echo -n {} \+)
-        "${SPOTBUGS_HOME}/bin/spotbugs" -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList "${FINDSECBUGS_HOME}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" -sarif=spotbugs.sarif ${SPOTBUGS_FILES}
+        "${SPOTBUGS_HOME}/bin/spotbugs" -maxHeap ${{ inputs.maxHeap }} -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList "${FINDSECBUGS_HOME}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" -sarif=spotbugs.sarif ${SPOTBUGS_FILES}
       shell: bash
     - name: Adjust file paths
       if: inputs.path_prefix != null
