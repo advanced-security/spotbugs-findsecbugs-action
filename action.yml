@@ -46,7 +46,7 @@ inputs:
   maxHeap:
     description: 'By default, SpotBugs allocates 768M of heap space. You can increase this using this parameter'
     required: false
-    default: 768M
+    default: 768
 
 runs:
   using: "composite"
