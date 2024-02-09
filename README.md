@@ -28,6 +28,7 @@ Then, set up this Action as a step in your Actions workflow, e.g. for a typical 
 * `java_version`: The Java version to use. Default: `11`
 * `no_cache`: Do not use cached versions of the Spotbugs and FindSecBugs tools. Default: `false`
 * `path_prefix`: Add this path prefix to the start of file locations. Required: `false`
+* `maxHeap`: By default, SpotBugs allocates 768M of heap space. You can increase this using this parameter. Required: `false`
 
 ## Full sample workflow
 
