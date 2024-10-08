@@ -108,7 +108,7 @@ runs:
         INPUT_FINDSECBUGS_VERSION: ${{ inputs.findsecbugs_version }}
         INPUT_SPOTBUGS_TARGET: ${{ inputs.spotbugs_target }}
         INPUT_SPOTBUGS_GLOB: ${{ inputs.spotbugs_filename_glob }}
-        INPUT_RAM: {{ inputs.ram }}
+        INPUT_RAM: ${{ inputs.ram }}
         SPOTBUGS_HOME: ${{ inputs.base_path }}/spotbugs+/spotbugs-${{ inputs.spotbugs_version }}
         FINDSECBUGS_HOME: ${{ inputs.base_path }}/findsecbugs+/
         SPOTBUGS_WORKING: ${{ inputs.base_path }}/spotbugs_working+/
@@ -119,7 +119,7 @@ runs:
         "${SPOTBUGS_HOME}/bin/spotbugs" -maxHeap "${INPUT_RAM}" -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList "${FINDSECBUGS_HOME}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" -sarif=spotbugs.sarif ${SPOTBUGS_FILES}
       shell: bash
     - name: Adjust file paths
-      if: inputs.path_prefix != ""
+      if: inputs.path_prefix != ''
       env:
         INPUT_PATH_PREFIX: ${{ inputs.path_prefix }}
         SPOTBUGS_WORKING: ${{ inputs.base_path }}/spotbugs_working+/
