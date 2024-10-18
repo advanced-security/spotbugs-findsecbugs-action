@@ -131,6 +131,6 @@ runs:
       shell: bash
     - name: Upload SARIF file
       if: inputs.upload_sarif == 'true'
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: ${{ inputs.base_path }}/spotbugs_working+/spotbugs.sarif
