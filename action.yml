@@ -96,7 +96,7 @@ runs:
         wget -q -O spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz "https://github.com/spotbugs/spotbugs/releases/download/${INPUT_SPOTBUGS_VERSION}/spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz"
         if [ "${INPUT_SPOTBUGS_CHECKSUM}" != "" ]; then
           echo "Checking checksum"
-          echo "${INPUT_SPOTBUGS_CHECKSUM}  spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz" | sha256sum -c -
+          echo "${INPUT_SPOTBUGS_CHECKSUM}  spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz" | sha256sum -c - || { echo "Checksum verification failed for spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz"; exit 1; }
         else
           echo "No checksum provided, showing current checksum"
           sha256sum spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
