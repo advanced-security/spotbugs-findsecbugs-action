@@ -15,7 +15,7 @@ Then, set up this Action as a step in your Actions workflow, e.g. for a typical 
 
 ```yaml
     - name: Run SpotBugs with FindSecBugs
-      uses: advanced-security/spotbugs-findsecbugs-action@43f04c055f6684cad969eaf28f088f6c5dddfe88 # v1.0.6
+      uses: advanced-security/spotbugs-findsecbugs-action@391590f38ad2a1df3162cac10cc04bb1af172088 # v1.0.6
 ```
 
 ## Inputs
