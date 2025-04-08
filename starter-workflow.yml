@@ -20,10 +20,10 @@ jobs:
         
       steps:
         - name: Checkout
-          uses: actions/checkout@v3
+          uses: actions/checkout@4.2.2
         # this needs to be appropriately configured for your project
         - name: Setup Java
-          uses: actions/setup-java@v3
+          uses: actions/setup-java@4.7.0
           with:
             distribution: 'microsoft'
             java-version: 11
@@ -32,14 +32,18 @@ jobs:
           run: sbt publishLocal
         # now run SpotBugs and upload the results to Code Scanning
         - name: Run SpotBugs with FindSecBugs
-          uses: advanced-security/spotbugs-findsecbugs-action@v1
+          uses: advanced-security/spotbugs-findsecbugs-action@33c1fbec0ef4c37b5d32fc41b072bb624962d5d8 # v1.0.6
           with:
             # set these appropriately for your project - the defaults are shown here for context
+            # make sure to set a SHA256 checksum that matches the version you want to use of SpotBugs
+            # check https://github.com/spotbugs/spotbugs/releases
+            # you can switch off checksum checking by setting the checksum to '', but this is not recommended
             spotbugs_target: 'target/scala-2.13' # cannot have globs
             # spotbugs_filename_glob: '*.jar'
             # upload_sarif: 'true'
             # no_cache: 'false'
             # spotbugs_version: '4.7.3'
+            # spotbugs_checksum: 'f02e2f1135b23f3edfddb75f64be0491353cfeb567b5a584115aa4fd373d4431'
             # findsecbugs_version: '1.12.0'
             # java_distribution: 'microsoft'
             # java_version: '11'

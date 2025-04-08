@@ -1,6 +1,7 @@
 # spotbugs-findsecbugs-action
 
-> ℹ️ This is an _unofficial_ tool created by Field Security Services, and is not officially supported by GitHub.
+> [!NOTE]
+> This is an _unofficial_ tool created by Field Security Services, and is not officially supported by GitHub.
 
 This Action run SpotBugs with FindSecBugs, and uploads the results to GitHub Code Scanning.
 
@@ -14,15 +15,18 @@ Then, set up this Action as a step in your Actions workflow, e.g. for a typical 
 
 ```yaml
     - name: Run SpotBugs with FindSecBugs
-      uses: advanced-security/spotbugs-findsecbugs-action@v1
+      uses: advanced-security/spotbugs-findsecbugs-action@33c1fbec0ef4c37b5d32fc41b072bb624962d5d8 # v1.0.6
 ```
 
 ## Inputs
 
 * `spotbugs_version`: The version of SpotBugs to use. Default: `4.7.3`
+* `spotbugs_checksum`: The SHA256 checksum of the SpotBugs tarball. Default is the checksum for the default version. Set to '' to disable checksum verification (not recommended).
+  * find the checksum for the SpotBugs version you specify on the [GitHub release page](https://github.com/spotbugs/spotbugs/releases)
 * `findsecbugs_version`: The version of FindSecBugs to use. Default: `1.12.0`
+  * Maven Central releases are immutable, so there is no need to specify a checksum, but it is shown in the workflow log for traceability
 * `spotbugs_target`: The target directory to run SpotBugs against. Default: `target/`
-* `spotbugs_filename_glob`: The filenames to locate for SpotBugs, e.g. *.class, *.jar. Default: `*.jar`
+* `spotbugs_filename_glob`: The filenames to locate for SpotBugs, e.g. `*.class`, `*.jar`. Default: `*.jar`
 * `upload_sarif`: Whether to upload the SARIF file to GitHub Code Scanning. Default: `true`
 * `java_distribution`: The Java distribution to use. Default: `microsoft`
 * `java_version`: The Java version to use. Default: `11`
@@ -67,7 +71,8 @@ See [CODEOWNERS](CODEOWNERS) for the list of maintainers.
 
 ## Support
 
-> ℹ️ This is an _unofficial_ tool created by Field Security Services, and is not officially supported by GitHub.
+> [!NOTE]
+> This is an _unofficial_ tool created by Field Security Services, and is not officially supported by GitHub.
 
 See the [SUPPORT](SUPPORT.md) file.
 
