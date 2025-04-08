@@ -111,7 +111,6 @@ runs:
       if: inputs.no_cache == 'true' || steps.cache-findsecbugs.outputs.cache-hit != 'true'
       env:
         INPUT_FINDSECBUGS_VERSION: ${{ inputs.findsecbugs_version }}
-        INPUT_FINDSECBUGS_CHECKSUM: ${{ inputs.findsecbugs_checksum }}
         FINDSECBUGS_HOME: ${{ inputs.base_path }}/findsecbugs+/
       run: |
         mkdir -p "${FINDSECBUGS_HOME}"
