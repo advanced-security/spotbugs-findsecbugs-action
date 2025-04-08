@@ -15,15 +15,16 @@ Then, set up this Action as a step in your Actions workflow, e.g. for a typical 
 
 ```yaml
     - name: Run SpotBugs with FindSecBugs
-      uses: advanced-security/spotbugs-findsecbugs-action@617e926a90ec26044dc952a28870b4f4854904c8 # v1.0.5
+      uses: advanced-security/spotbugs-findsecbugs-action@43f04c055f6684cad969eaf28f088f6c5dddfe88 # v1.0.6
 ```
 
 ## Inputs
 
 * `spotbugs_version`: The version of SpotBugs to use. Default: `4.7.3`
 * `spotbugs_checksum`: The SHA256 checksum of the SpotBugs tarball. Default is the checksum for the default version. Set to '' to disable checksum verification (not recommended).
-  * find the matching checksum for the SpotBugs version on the [GitHub release page](https://github.com/spotbugs/spotbugs/releases)
+  * find the checksum for the SpotBugs version you specify on the [GitHub release page](https://github.com/spotbugs/spotbugs/releases)
 * `findsecbugs_version`: The version of FindSecBugs to use. Default: `1.12.0`
+  * Maven Central releases are immutable, so there is no need to specify a checksum, but it is shown in the workflow log for traceability
 * `spotbugs_target`: The target directory to run SpotBugs against. Default: `target/`
 * `spotbugs_filename_glob`: The filenames to locate for SpotBugs, e.g. `*.class`, `*.jar`. Default: `*.jar`
 * `upload_sarif`: Whether to upload the SARIF file to GitHub Code Scanning. Default: `true`
