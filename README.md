@@ -14,7 +14,7 @@ Then, set up this Action as a step in your Actions workflow, e.g. for a typical 
 
 ```yaml
     - name: Run SpotBugs with FindSecBugs
-      uses: advanced-security/spotbugs-findsecbugs-action@v1
+      uses: advanced-security/spotbugs-findsecbugs-action@617e926a90ec26044dc952a28870b4f4854904c8 # v1.0.5
 ```
 
 ## Inputs
@@ -22,7 +22,7 @@ Then, set up this Action as a step in your Actions workflow, e.g. for a typical 
 * `spotbugs_version`: The version of SpotBugs to use. Default: `4.7.3`
 * `findsecbugs_version`: The version of FindSecBugs to use. Default: `1.12.0`
 * `spotbugs_target`: The target directory to run SpotBugs against. Default: `target/`
-* `spotbugs_filename_glob`: The filenames to locate for SpotBugs, e.g. *.class, *.jar. Default: `*.jar`
+* `spotbugs_filename_glob`: The filenames to locate for SpotBugs, e.g. `*.class`, `*.jar`. Default: `*.jar`
 * `upload_sarif`: Whether to upload the SARIF file to GitHub Code Scanning. Default: `true`
 * `java_distribution`: The Java distribution to use. Default: `microsoft`
 * `java_version`: The Java version to use. Default: `11`
