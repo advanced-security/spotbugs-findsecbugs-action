@@ -11,6 +11,10 @@ inputs:
     description: 'The version of SpotBugs to use'
     required: false
     default: '4.7.3'
+  spotbugs_checksum:
+    description: 'The SHA256 checksum of the SpotBugs tarball'
+    required: false
+    default: 'f02e2f1135b23f3edfddb75f64be0491353cfeb567b5a584115aa4fd373d4431'
   findsecbugs_version:
     description: 'The version of FindSecBugs to use'
     required: false
@@ -84,11 +88,19 @@ runs:
       if: inputs.no_cache == 'true' || steps.cache-spotbugs.outputs.cache-hit != 'true'
       env:
         INPUT_SPOTBUGS_VERSION: ${{ inputs.spotbugs_version }}
+        INPUT_SPOTBUGS_CHECKSUM: ${{ inputs.spotbugs_checksum }}
         SPOTBUGS_HOME: ${{ inputs.base_path }}/spotbugs+/
       run: |
         mkdir -p "${SPOTBUGS_HOME}"
         cd "${SPOTBUGS_HOME}"
         wget -q -O spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz "https://github.com/spotbugs/spotbugs/releases/download/${INPUT_SPOTBUGS_VERSION}/spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz"
+        if [ "${INPUT_SPOTBUGS_CHECKSUM}" != "" ]; then
+          echo "Checking checksum"
+          sha256 -c "${INPUT_SPOTBUGS_CHECKSUM}" spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
+        else
+          echo "No checksum provided, showing current checksum"
+          sha256 spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
+        fi
         tar -xzf spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
         chmod +x spotbugs-"${INPUT_SPOTBUGS_VERSION}"/bin/spotbugs
         ls "spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz"
@@ -99,11 +111,14 @@ runs:
       if: inputs.no_cache == 'true' || steps.cache-findsecbugs.outputs.cache-hit != 'true'
       env:
         INPUT_FINDSECBUGS_VERSION: ${{ inputs.findsecbugs_version }}
+        INPUT_FINDSECBUGS_CHECKSUM: ${{ inputs.findsecbugs_checksum }}
         FINDSECBUGS_HOME: ${{ inputs.base_path }}/findsecbugs+/
       run: |
         mkdir -p "${FINDSECBUGS_HOME}"
         cd "${FINDSECBUGS_HOME}"
         wget -q -O "findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" "https://search.maven.org/remotecontent?filepath=com/h3xstream/findsecbugs/findsecbugs-plugin/${INPUT_FINDSECBUGS_VERSION}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
+        # Maven Central provides immutable versions, so we don't check the checksum, but do print it for traceability
+        sha256 "findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
         ls "findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
         echo "Got findsecbugs"
       shell: bash
