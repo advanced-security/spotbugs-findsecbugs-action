@@ -63,6 +63,7 @@ runs:
       with:
         distribution: ${{ inputs.java_distribution }}
         java-version: ${{ inputs.java_version }}
+
     - name: Cache SpotBugs
       if: inputs.no_cache == 'false'
       id: cache-spotbugs
@@ -70,6 +71,7 @@ runs:
       with:
         path: ${{ inputs.base_path }}/spotbugs+/spotbugs-${{ inputs.spotbugs_version }}
         key: ${{ runner.os }}-spotbugs-${{ inputs.spotbugs_version }}
+
     - name: Cache FindSecBugs
       if: inputs.no_cache == 'false'
       id: cache-findsecbugs
@@ -77,6 +79,7 @@ runs:
       with:
         path: ${{ inputs.base_path }}/findsecbugs+/findsecbugs-plugin-${{ inputs.findsecbugs_version }}.jar
         key: ${{ runner.os }}-findsecbugs-${{ inputs.findsecbugs_version }}
+
     - name: Get SpotBugs
       if: inputs.no_cache == 'true' || steps.cache-spotbugs.outputs.cache-hit != 'true'
       env:
@@ -91,6 +94,7 @@ runs:
         ls "spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz"
         echo "Got spotbugs"
       shell: bash
+
     - name: Get FindSecBugs
       if: inputs.no_cache == 'true' || steps.cache-findsecbugs.outputs.cache-hit != 'true'
       env:
@@ -103,6 +107,7 @@ runs:
         ls "findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
         echo "Got findsecbugs"
       shell: bash
+
     - name: Run SpotBugs
       env:
         INPUT_FINDSECBUGS_VERSION: ${{ inputs.findsecbugs_version }}
@@ -118,6 +123,7 @@ runs:
         SPOTBUGS_FILES=$(find "${GITHUB_WORKSPACE}/${INPUT_SPOTBUGS_TARGET}" -type f -name "${INPUT_SPOTBUGS_GLOB}" -exec echo -n {} \+)
         "${SPOTBUGS_HOME}/bin/spotbugs" -maxHeap "${INPUT_RAM}" -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList "${FINDSECBUGS_HOME}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" -sarif=spotbugs.sarif ${SPOTBUGS_FILES}
       shell: bash
+
     - name: Adjust file paths
       if: inputs.path_prefix != ''
       env:
@@ -129,6 +135,7 @@ runs:
         mv spotbugs.sarif spotbugs_orig.sarif
         mv spotbugs_edited.sarif spotbugs.sarif
       shell: bash
+
     - name: Upload SARIF file
       if: inputs.upload_sarif == 'true'
       uses: github/codeql-action/upload-sarif@3.28.15
