@@ -99,7 +99,7 @@ runs:
           echo "${INPUT_SPOTBUGS_CHECKSUM}  spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz" | sha256sum -c -
         else
           echo "No checksum provided, showing current checksum"
-          sha256 spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
+          sha256sum spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
         fi
         tar -xzf spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
         chmod +x spotbugs-"${INPUT_SPOTBUGS_VERSION}"/bin/spotbugs
