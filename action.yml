@@ -96,7 +96,7 @@ runs:
         wget -q -O spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz "https://github.com/spotbugs/spotbugs/releases/download/${INPUT_SPOTBUGS_VERSION}/spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz"
         if [ "${INPUT_SPOTBUGS_CHECKSUM}" != "" ]; then
           echo "Checking checksum"
-          sha256 -c "${INPUT_SPOTBUGS_CHECKSUM}" spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
+          echo "${INPUT_SPOTBUGS_CHECKSUM}  spotbugs-${INPUT_SPOTBUGS_VERSION}.tgz" | sha256sum -c -
         else
           echo "No checksum provided, showing current checksum"
           sha256 spotbugs-"${INPUT_SPOTBUGS_VERSION}".tgz
@@ -118,7 +118,7 @@ runs:
         cd "${FINDSECBUGS_HOME}"
         wget -q -O "findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" "https://search.maven.org/remotecontent?filepath=com/h3xstream/findsecbugs/findsecbugs-plugin/${INPUT_FINDSECBUGS_VERSION}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
         # Maven Central provides immutable versions, so we don't check the checksum, but do print it for traceability
-        sha256 "findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
+        sha256sum "findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
         ls "findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar"
         echo "Got findsecbugs"
       shell: bash
