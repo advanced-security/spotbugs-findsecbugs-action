@@ -27,6 +27,9 @@ jobs:
           with:
             distribution: 'microsoft'
             java-version: 11
+        # Setup SBT
+        - name: Setup SBT
+          uses: sbt/setup-sbt@26ab4b0fa1c47fa62fc1f6e51823a658fb6c760c # v1.1.7            
         # do your build steps. This example uses sbt to create a .jar file, which will go into the target/scala-2.13 folder
         - name: Publish locally with sbt
           run: sbt publishLocal
@@ -39,6 +42,8 @@ jobs:
             # check https://github.com/spotbugs/spotbugs/releases
             # you can switch off checksum checking by setting the checksum to '', but this is not recommended
             spotbugs_target: 'target/scala-2.13' # cannot have globs
+            # setting the path_prefix is important if you are seeing "Preview unavailable" on alerts
+            # path_prefix: "src/scala/"
             # spotbugs_filename_glob: '*.jar'
             # upload_sarif: 'true'
             # no_cache: 'false'
@@ -47,3 +52,4 @@ jobs:
             # findsecbugs_version: '1.12.0'
             # java_distribution: 'microsoft'
             # java_version: '11'
+            # base_path: "/home/runner/work/"
