@@ -63,7 +63,7 @@ runs:
   using: "composite"
   steps:
     - name: Setup Java
-      uses: actions/setup-java@4.7.0
+      uses: actions/setup-java@v4.7.0
       with:
         distribution: ${{ inputs.java_distribution }}
         java-version: ${{ inputs.java_version }}
@@ -71,7 +71,7 @@ runs:
     - name: Cache SpotBugs
       if: inputs.no_cache == 'false'
       id: cache-spotbugs
-      uses: actions/cache@4.2.3
+      uses: actions/cache@v4.2.3
       with:
         path: ${{ inputs.base_path }}/spotbugs+/spotbugs-${{ inputs.spotbugs_version }}
         key: ${{ runner.os }}-spotbugs-${{ inputs.spotbugs_version }}
@@ -79,7 +79,7 @@ runs:
     - name: Cache FindSecBugs
       if: inputs.no_cache == 'false'
       id: cache-findsecbugs
-      uses: actions/cache@4.2.3
+      uses: actions/cache@v4.2.3
       with:
         path: ${{ inputs.base_path }}/findsecbugs+/findsecbugs-plugin-${{ inputs.findsecbugs_version }}.jar
         key: ${{ runner.os }}-findsecbugs-${{ inputs.findsecbugs_version }}
@@ -152,6 +152,6 @@ runs:
 
     - name: Upload SARIF file
       if: inputs.upload_sarif == 'true'
-      uses: github/codeql-action/upload-sarif@3.28.15
+      uses: github/codeql-action/upload-sarif@v3.28.15
       with:
         sarif_file: ${{ inputs.base_path }}/spotbugs_working+/spotbugs.sarif
