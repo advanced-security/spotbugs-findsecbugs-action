@@ -53,3 +53,4 @@ jobs:
             # java_distribution: 'microsoft'
             # java_version: '11'
             # base_path: "/home/runner/work/"
+            # bug_categories: 'SECURITY' # or 'SECURITY,MALICIOUS_CODE' or 'CORRECTNESS,PERFORMANCE,SECURITY'

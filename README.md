@@ -34,6 +34,9 @@ Then, set up this Action as a step in your Actions workflow, e.g. for a typical 
 * `path_prefix`: Add this path prefix to the start of file locations. Required: `false`
 * `base_path`: The base path to use for installing the tools. Default: `/home/runner/work/`
 * `ram`: The RAM to use in MB. Default: `768`
+* `bug_categories`: The bug categories to report (comma-separated). Default: `SECURITY`
+  * Available categories: `SECURITY`, `BAD_PRACTICE`, `CORRECTNESS`, `PERFORMANCE`, `STYLE`, `MT_CORRECTNESS`, `I18N`, `MALICIOUS_CODE`, `EXPERIMENTAL`, `NOISE`
+  * Examples: `SECURITY`, `SECURITY,MALICIOUS_CODE`, `CORRECTNESS,PERFORMANCE,SECURITY`
 
 ## Full sample workflow
 

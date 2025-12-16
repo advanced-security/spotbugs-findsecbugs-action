@@ -51,6 +51,10 @@ inputs:
     description: 'The amount of RAM to use for SpotBugs (in MB)'
     required: false
     default: '768'
+  bug_categories:
+    description: 'The bug categories to report (comma-separated). Available categories: SECURITY, BAD_PRACTICE, CORRECTNESS, PERFORMANCE, STYLE, MT_CORRECTNESS, I18N, MALICIOUS_CODE, EXPERIMENTAL, NOISE'
+    required: false
+    default: 'SECURITY'
 
   # Allows for a custom runner home directory to be specified for self-hosted runners
   base_path:
@@ -128,6 +132,7 @@ runs:
         INPUT_SPOTBUGS_TARGET: ${{ inputs.spotbugs_target }}
         INPUT_SPOTBUGS_GLOB: ${{ inputs.spotbugs_filename_glob }}
         INPUT_RAM: ${{ inputs.ram }}
+        INPUT_BUG_CATEGORIES: ${{ inputs.bug_categories }}
         SPOTBUGS_HOME: ${{ inputs.base_path }}/spotbugs+/spotbugs-${{ inputs.spotbugs_version }}
         FINDSECBUGS_HOME: ${{ inputs.base_path }}/findsecbugs+/
         SPOTBUGS_WORKING: ${{ inputs.base_path }}/spotbugs_working+/
@@ -135,7 +140,7 @@ runs:
         mkdir -p "${SPOTBUGS_WORKING}"
         cd "${SPOTBUGS_WORKING}"
         SPOTBUGS_FILES=$(find "${GITHUB_WORKSPACE}/${INPUT_SPOTBUGS_TARGET}" -type f -name "${INPUT_SPOTBUGS_GLOB}" -exec echo -n {} \+)
-        "${SPOTBUGS_HOME}/bin/spotbugs" -maxHeap "${INPUT_RAM}" -textui -quiet -effort:max -low -bugCategories SECURITY -pluginList "${FINDSECBUGS_HOME}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" -sarif=spotbugs.sarif ${SPOTBUGS_FILES}
+        "${SPOTBUGS_HOME}/bin/spotbugs" -maxHeap "${INPUT_RAM}" -textui -quiet -effort:max -low -bugCategories "${INPUT_BUG_CATEGORIES}" -pluginList "${FINDSECBUGS_HOME}/findsecbugs-plugin-${INPUT_FINDSECBUGS_VERSION}.jar" -sarif=spotbugs.sarif ${SPOTBUGS_FILES}
       shell: bash
 
     - name: Adjust file paths
